@@ -29,7 +29,7 @@ export default function HeroSection() {
         >
           <div className="relative w-28 h-28 md:w-36 md:h-36">
             <Image
-              src="/images/fob-golf-logo.png"
+              src="/images/fob-club-logo.png"
               alt="FOB Golf League"
               fill
               className="object-contain drop-shadow-2xl"
