@@ -4,6 +4,7 @@ import HeroSection from "@/components/home/HeroSection";
 import LeagueStats from "@/components/home/LeagueStats";
 import SchedulePreview from "@/components/home/SchedulePreview";
 import SeasonSpotlight from "@/components/leaderboard/SeasonSpotlight";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
         <LeagueStats />
         <SchedulePreview />
         <SeasonSpotlight />
+        <TestimonialsSection />
         <NewsletterSection />
       </main>
       <Footer />
