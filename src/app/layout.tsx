@@ -21,8 +21,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/icon.png', sizes: '512x512', type: 'image/png' },
     ],
     shortcut: '/favicon.ico',
+    apple: '/icon.png',
   },
   title: "FOB Golf League | fob.club",
   description:
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/fob-golf-logo.png",
+        url: "/images/fob-club-logo.png",
         width: 800,
         height: 800,
         alt: "FOB Golf League",
