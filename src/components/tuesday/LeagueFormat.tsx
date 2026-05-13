@@ -5,11 +5,10 @@ import { motion, useInView } from 'framer-motion';
 import { ClipboardList, Zap, Globe } from 'lucide-react';
 
 const scoringExample = [
-  { place: '1st', pts: 5, highlight: true },
-  { place: '2nd', pts: 4, highlight: false },
-  { place: '3rd', pts: 3, highlight: false },
-  { place: '4th', pts: 2, highlight: false },
-  { place: '5th', pts: 1, highlight: false },
+  { place: '1st', pts: 3,    highlight: true },
+  { place: '2nd', pts: 2,    highlight: false },
+  { place: '3rd', pts: 1,    highlight: false },
+  { place: '4th', pts: 0.75, highlight: false },
   { place: 'All others', pts: 0, highlight: false },
 ];
 
@@ -63,7 +62,7 @@ export default function LeagueFormat() {
                 >
                   <span>{row.place}</span>
                   <span className={row.pts > 0 ? 'text-fob-orange font-black' : 'text-gray-300 dark:text-white/20'}>
-                    {row.pts > 0 ? `${row.pts} pts` : '—'}
+                    {row.pts > 0 ? `${row.pts % 1 === 0 ? row.pts : row.pts} pts` : '—'}
                   </span>
                 </div>
               ))}
