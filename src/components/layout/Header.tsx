@@ -10,6 +10,7 @@ import ThemeToggle from './ThemeToggle';
 const navigation = [
   { name: 'Schedule', href: '/schedule' },
   { name: 'Leaderboard', href: '/leaderboard' },
+  { name: 'Tuesday League', href: '/tuesday' },
 ];
 
 export default function Header() {
