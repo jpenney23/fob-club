@@ -100,7 +100,7 @@ export default function RoundResults() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/8">
-                {round.results.map((r, i) => (
+                {round.results.filter(r => r.pts > 0).map((r, i) => (
                   <tr key={i} className={`transition-colors ${i === 0 ? 'bg-yellow-400/6 dark:bg-yellow-400/8' : 'hover:bg-gray-50/70 dark:hover:bg-white/4'}`}>
                     <td className="py-3 pl-5 pr-3">
                       <span className={`inline-block text-xs px-2 py-0.5 rounded-md ${posStyle[r.pos] ?? 'text-gray-400 font-semibold'}`}>
