@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import TuesdayHero from '@/components/tuesday/TuesdayHero';
+import RoundPodium from '@/components/tuesday/RoundPodium';
 import SeasonStandings from '@/components/tuesday/SeasonStandings';
 import RoundResults from '@/components/tuesday/RoundResults';
 import LeagueFormat from '@/components/tuesday/LeagueFormat';
@@ -17,6 +18,7 @@ export default function TuesdayPage() {
       <Header />
       <main className="pt-16">
         <TuesdayHero />
+        <RoundPodium />
         <SeasonStandings />
         <RoundResults />
         <LeagueFormat />

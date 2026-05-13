@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { MapPin, Users, DollarSign, Trophy } from 'lucide-react';
+import { MapPin, Users } from 'lucide-react';
 import { tuesdayRounds } from '@/lib/data/tuesday';
 
 const posStyle: Record<string, string> = {
@@ -78,11 +78,6 @@ export default function RoundResults() {
                     <Users className="size-3.5 text-fob-orange" />{round.playerCount} Players
                   </span>
                 )}
-                {round.pot && (
-                  <span className="flex items-center gap-1.5 text-white/60 text-xs font-semibold">
-                    <DollarSign className="size-3.5 text-fob-orange" />${round.pot} Pot
-                  </span>
-                )}
               </div>
             </div>
           </div>
@@ -100,7 +95,7 @@ export default function RoundResults() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/8">
-                {round.results.filter(r => r.pts > 0).map((r, i) => (
+                {round.results.map((r, i) => (
                   <tr key={i} className={`transition-colors ${i === 0 ? 'bg-yellow-400/6 dark:bg-yellow-400/8' : 'hover:bg-gray-50/70 dark:hover:bg-white/4'}`}>
                     <td className="py-3 pl-5 pr-3">
                       <span className={`inline-block text-xs px-2 py-0.5 rounded-md ${posStyle[r.pos] ?? 'text-gray-400 font-semibold'}`}>
@@ -135,21 +130,6 @@ export default function RoundResults() {
             </table>
           </div>
 
-          {/* Payouts */}
-          {round.payouts && round.payouts.length > 0 && (
-            <div className="px-5 py-4 bg-fob-orange/5 border-t border-fob-orange/15 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Trophy className="size-4 text-fob-orange" />
-                <span className="text-xs font-bold text-fob-dark-navy dark:text-white uppercase tracking-wider">Payouts</span>
-              </div>
-              {round.payouts.map(p => (
-                <span key={p.place} className="text-xs font-bold text-gray-600 dark:text-gray-300">
-                  {p.place}: <span className="text-fob-orange">${p.amount}</span>
-                </span>
-              ))}
-              <span className="ml-auto text-xs text-gray-400">Total pot: ${round.pot}</span>
-            </div>
-          )}
         </motion.div>
       </div>
     </section>
