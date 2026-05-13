@@ -42,7 +42,7 @@ export const tuesdayRounds: TuesdayRound[] = [
       { place: '2nd', amount: 60 },
     ],
     results: [
-      { pos: '1',   name: 'Curcio, Tyson',       quotaDiff: 1,    gross: null, pts: 3 },
+      { pos: '1',   name: 'Curcio, Tyson',       quotaDiff: 1,    gross: 45,   pts: 3 },
       { pos: 'T2',  name: 'Devirgilio, John',     quotaDiff: -1,   gross: 45,   pts: 2 },
       { pos: 'T2',  name: 'McConaghy, Robert',    quotaDiff: -1,   gross: 45,   pts: 1 },
       { pos: 'T2',  name: 'Masiello, Charles',    quotaDiff: -1,   gross: 43,   pts: 0.75 },
