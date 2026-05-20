@@ -5,11 +5,29 @@ import { motion, useInView } from 'framer-motion';
 import { Trophy } from 'lucide-react';
 import { tuesdaySeasonStandings, tuesdayRounds, TUESDAY_TOTAL_ROUNDS } from '@/lib/data/tuesday';
 
-const medalStyle: Record<number, { row: string; rank: string; medal: string }> = {
-  0: { row: 'bg-yellow-500/8 dark:bg-yellow-400/10', rank: 'text-yellow-500 dark:text-yellow-400', medal: '🥇' },
-  1: { row: 'bg-gray-400/6 dark:bg-gray-300/8',      rank: 'text-gray-400',                        medal: '🥈' },
-  2: { row: 'bg-amber-600/6 dark:bg-amber-500/8',    rank: 'text-amber-600 dark:text-amber-400',   medal: '🥉' },
+const medalStyle: Record<string, { row: string; rank: string; medal: string }> = {
+  '1':  { row: 'bg-yellow-500/8 dark:bg-yellow-400/10', rank: 'text-yellow-500 dark:text-yellow-400', medal: '🥇' },
+  'T1': { row: 'bg-yellow-500/8 dark:bg-yellow-400/10', rank: 'text-yellow-500 dark:text-yellow-400', medal: '🥇' },
+  '2':  { row: 'bg-gray-400/6 dark:bg-gray-300/8',      rank: 'text-gray-400',                        medal: '🥈' },
+  'T2': { row: 'bg-gray-400/6 dark:bg-gray-300/8',      rank: 'text-gray-400',                        medal: '🥈' },
+  '3':  { row: 'bg-amber-600/6 dark:bg-amber-500/8',    rank: 'text-amber-600 dark:text-amber-400',   medal: '🥉' },
+  'T3': { row: 'bg-amber-600/6 dark:bg-amber-500/8',    rank: 'text-amber-600 dark:text-amber-400',   medal: '🥉' },
 };
+
+function getDisplayRanks(standings: typeof tuesdaySeasonStandings): string[] {
+  // Each round win by a higher-ranked player occupies a separate slot.
+  // A player with 2 wins takes slots 1 & 2, pushing the next players to T3.
+  const roundWins = (e: typeof tuesdaySeasonStandings[0]) =>
+    e.roundPoints.filter(p => p === 3).length;
+
+  return standings.map((entry) => {
+    const playersAbove = standings.filter(e => e.totalPoints > entry.totalPoints);
+    const offset = playersAbove.reduce((sum, e) => sum + Math.max(roundWins(e), 1), 0);
+    const rank = offset + 1;
+    const tied = entry.totalPoints > 0 && standings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
+    return tied ? `T${rank}` : `${rank}`;
+  });
+}
 
 export default function SeasonStandings() {
   const ref = useRef(null);
@@ -63,46 +81,50 @@ export default function SeasonStandings() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-white/8">
-                {tuesdaySeasonStandings.map((entry, i) => {
-                  const medal = medalStyle[i];
-                  return (
-                    <tr
-                      key={entry.name}
-                      className={`transition-colors hover:bg-fob-orange/4 ${medal?.row ?? (i % 2 === 0 ? 'bg-white dark:bg-transparent' : 'bg-gray-50/60 dark:bg-white/3')}`}
-                    >
-                      <td className="py-3 pl-5 pr-3">
-                        {medal ? (
-                          <span className="text-base">{medal.medal}</span>
-                        ) : (
-                          <span className="text-xs font-bold text-gray-400">{i + 1}</span>
-                        )}
-                      </td>
-                      <td className="py-3 px-3">
-                        <span className={`font-semibold text-sm ${medal ? 'text-fob-dark-navy dark:text-white' : 'text-gray-700 dark:text-gray-200'}`}>
-                          {entry.name}
-                        </span>
-                      </td>
-                      {entry.roundPoints.map((pts, ri) => (
-                        <td key={ri} className="py-3 px-2 text-center">
-                          {pts !== null ? (
-                            <span className={`text-xs font-bold ${pts > 0 ? 'text-fob-orange' : 'text-gray-400 dark:text-gray-600'}`}>
-                              {pts % 1 === 0 ? pts : pts.toFixed(2)}
-                            </span>
-                          ) : ri < completedRounds.length ? (
-                            <span className="text-xs text-gray-300 dark:text-white/20">—</span>
+                {(() => {
+                  const displayRanks = getDisplayRanks(tuesdaySeasonStandings);
+                  return tuesdaySeasonStandings.map((entry, i) => {
+                    const displayRank = displayRanks[i];
+                    const medal = medalStyle[displayRank];
+                    return (
+                      <tr
+                        key={entry.name}
+                        className={`transition-colors hover:bg-fob-orange/4 ${medal?.row ?? (i % 2 === 0 ? 'bg-white dark:bg-transparent' : 'bg-gray-50/60 dark:bg-white/3')}`}
+                      >
+                        <td className="py-3 pl-5 pr-3">
+                          {medal ? (
+                            <span className="text-base">{medal.medal}</span>
                           ) : (
-                            <span className="text-xs text-gray-200 dark:text-white/10">·</span>
+                            <span className="text-xs font-bold text-gray-400">{displayRank}</span>
                           )}
                         </td>
-                      ))}
-                      <td className="py-3 pl-3 pr-5 text-center">
-                        <span className={`text-sm font-black ${medal ? 'text-fob-orange' : 'text-fob-dark-navy dark:text-white'}`}>
-                          {entry.totalPoints % 1 === 0 ? entry.totalPoints : entry.totalPoints.toFixed(2)}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        <td className="py-3 px-3">
+                          <span className={`font-semibold text-sm ${medal ? 'text-fob-dark-navy dark:text-white' : 'text-gray-700 dark:text-gray-200'}`}>
+                            {entry.name}
+                          </span>
+                        </td>
+                        {entry.roundPoints.map((pts, ri) => (
+                          <td key={ri} className="py-3 px-2 text-center">
+                            {pts !== null ? (
+                              <span className={`text-xs font-bold ${pts > 0 ? 'text-fob-orange' : 'text-gray-400 dark:text-gray-600'}`}>
+                                {pts % 1 === 0 ? pts : pts.toFixed(2)}
+                              </span>
+                            ) : ri < completedRounds.length ? (
+                              <span className="text-xs text-gray-300 dark:text-white/20">—</span>
+                            ) : (
+                              <span className="text-xs text-gray-200 dark:text-white/10">·</span>
+                            )}
+                          </td>
+                        ))}
+                        <td className="py-3 pl-3 pr-5 text-center">
+                          <span className={`text-sm font-black ${medal ? 'text-fob-orange' : 'text-fob-dark-navy dark:text-white'}`}>
+                            {entry.totalPoints % 1 === 0 ? entry.totalPoints : entry.totalPoints.toFixed(2)}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  });
+                })()}
               </tbody>
             </table>
           </div>
@@ -114,27 +136,31 @@ export default function SeasonStandings() {
               <span>Player</span>
               <span className="text-right text-fob-orange">PTS</span>
             </div>
-            {tuesdaySeasonStandings.map((entry, i) => {
-              const medal = medalStyle[i];
-              return (
-                <div
-                  key={entry.name}
-                  className={`grid grid-cols-[40px_1fr_60px] items-center px-4 py-3 border-t border-gray-100 dark:border-white/8 ${medal?.row ?? (i % 2 === 0 ? '' : 'bg-gray-50/60 dark:bg-white/3')}`}
-                >
-                  <span>
-                    {medal ? (
-                      <span className="text-base">{medal.medal}</span>
-                    ) : (
-                      <span className="text-xs font-bold text-gray-400">{i + 1}</span>
-                    )}
-                  </span>
-                  <span className="text-sm font-semibold text-fob-dark-navy dark:text-white truncate">{entry.name}</span>
-                  <span className={`text-sm font-black text-right ${entry.totalPoints > 0 ? 'text-fob-orange' : 'text-gray-400'}`}>
-                    {entry.totalPoints % 1 === 0 ? entry.totalPoints : entry.totalPoints.toFixed(2)}
-                  </span>
-                </div>
-              );
-            })}
+            {(() => {
+              const displayRanks = getDisplayRanks(tuesdaySeasonStandings);
+              return tuesdaySeasonStandings.map((entry, i) => {
+                const displayRank = displayRanks[i];
+                const medal = medalStyle[displayRank];
+                return (
+                  <div
+                    key={entry.name}
+                    className={`grid grid-cols-[40px_1fr_60px] items-center px-4 py-3 border-t border-gray-100 dark:border-white/8 ${medal?.row ?? (i % 2 === 0 ? '' : 'bg-gray-50/60 dark:bg-white/3')}`}
+                  >
+                    <span>
+                      {medal ? (
+                        <span className="text-base">{medal.medal}</span>
+                      ) : (
+                        <span className="text-xs font-bold text-gray-400">{displayRank}</span>
+                      )}
+                    </span>
+                    <span className="text-sm font-semibold text-fob-dark-navy dark:text-white truncate">{entry.name}</span>
+                    <span className={`text-sm font-black text-right ${entry.totalPoints > 0 ? 'text-fob-orange' : 'text-gray-400'}`}>
+                      {entry.totalPoints % 1 === 0 ? entry.totalPoints : entry.totalPoints.toFixed(2)}
+                    </span>
+                  </div>
+                );
+              });
+            })()}
           </div>
 
           {/* Legend */}

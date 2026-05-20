@@ -43,7 +43,7 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
     results: [
       { pos: '1',   name: 'Curcio, Tyson',       quotaDiff: 1,    gross: 45,   pts: 3 },
-      { pos: 'T2',  name: 'Devirgilio, John',     quotaDiff: -1,   gross: 45,   pts: 2 },
+      { pos: 'T2',  name: 'DeVirgilio, John',     quotaDiff: -1,   gross: 45,   pts: 2 },
       { pos: 'T2',  name: 'McConaghy, Robert',    quotaDiff: -1,   gross: 45,   pts: 1 },
       { pos: 'T2',  name: 'Masiello, Charles',    quotaDiff: -1,   gross: 43,   pts: 0.75 },
       { pos: '5',   name: 'Catalagna, Paul',      quotaDiff: -2,   gross: 48,   pts: 0 },
@@ -59,8 +59,33 @@ export const tuesdayRounds: TuesdayRound[] = [
       { pos: '15',  name: 'Redler, William',      quotaDiff: -7,   gross: 50,   pts: 0 },
     ],
   },
-  ...Array.from({ length: 13 }, (_, i) => ({
-    round: i + 2,
+  {
+    round: 2,
+    date: '2026-05-19',
+    dateDisplay: 'May 19, 2026',
+    location: 'Bellevue Golf Club',
+    completed: true,
+    playerCount: 15,
+    results: [
+      { pos: '1',   name: 'Curcio, Tyson',       quotaDiff: 1,    gross: 43,   pts: 3 },
+      { pos: '2',   name: 'Iuliano, Lou',         quotaDiff: 1,    gross: 44,   pts: 2 },
+      { pos: '3',   name: 'Iuliano, Giro',        quotaDiff: 1,    gross: 41,   pts: 1 },
+      { pos: '4',   name: 'Zedros, Alexander',    quotaDiff: 1,    gross: 44,   pts: 0.75 },
+      { pos: '5',   name: 'Arbo, Ted',            quotaDiff: 0,    gross: 44,   pts: 0 },
+      { pos: '6',   name: 'Masiello, Charles',    quotaDiff: 0,    gross: 46,   pts: 0 },
+      { pos: '7',   name: 'Redler, William',      quotaDiff: -2,   gross: 45,   pts: 0 },
+      { pos: '8',   name: 'McConaghy, Robert',    quotaDiff: -3,   gross: 46,   pts: 0 },
+      { pos: '9',   name: 'Hastings, John',       quotaDiff: -3,   gross: 48,   pts: 0 },
+      { pos: 'T10', name: 'Iuliano, Anthony',      quotaDiff: -3,   gross: 46,   pts: 0 },
+      { pos: 'T10', name: 'Cassino, Mark',        quotaDiff: -3,   gross: 50,   pts: 0 },
+      { pos: '11',  name: 'Catalagna, Paul',      quotaDiff: -3,   gross: 48,   pts: 0 },
+      { pos: '12',  name: 'Arrigo, George',       quotaDiff: -4,   gross: 48,   pts: 0 },
+      { pos: '13',  name: 'DeVirgilio, John',     quotaDiff: -4,   gross: 48,   pts: 0 },
+      { pos: '14',  name: 'Picardo, Steve',       quotaDiff: -7,   gross: 50,   pts: 0 },
+    ],
+  },
+  ...Array.from({ length: 12 }, (_, i) => ({
+    round: i + 3,
     date: '',
     dateDisplay: 'TBD',
     location: 'Bellevue Golf Club',
@@ -69,18 +94,23 @@ export const tuesdayRounds: TuesdayRound[] = [
   })),
 ];
 
+// Players who participate in rounds but are not in the season-long league
+const SEASON_EXCLUDED = new Set(['Iuliano, Anthony']);
+
 // Build season standings from round results
 function buildStandings(): TuesdaySeasonEntry[] {
   const playerMap = new Map<string, (number | null)[]>();
 
   // Initialize all known players
   tuesdayRounds[0].results.forEach(r => {
+    if (SEASON_EXCLUDED.has(r.name)) return;
     playerMap.set(r.name, Array(TUESDAY_TOTAL_ROUNDS).fill(null));
   });
 
   // Fill in round points
   tuesdayRounds.forEach((round, ri) => {
     round.results.forEach(r => {
+      if (SEASON_EXCLUDED.has(r.name)) return;
       if (!playerMap.has(r.name)) {
         playerMap.set(r.name, Array(TUESDAY_TOTAL_ROUNDS).fill(null));
       }

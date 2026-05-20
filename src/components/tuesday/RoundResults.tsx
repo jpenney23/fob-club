@@ -15,7 +15,7 @@ export default function RoundResults() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
   const completedRounds = tuesdayRounds.filter(r => r.completed);
-  const [activeRound, setActiveRound] = useState(completedRounds[0]?.round ?? 1);
+  const [activeRound, setActiveRound] = useState(completedRounds.at(-1)?.round ?? 1);
 
   if (completedRounds.length === 0) return null;
 

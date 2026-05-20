@@ -2,25 +2,59 @@
 
 import { motion } from 'framer-motion';
 import { Crown, Trophy } from 'lucide-react';
-import { tuesdayRounds } from '@/lib/data/tuesday';
+import { tuesdayRounds, tuesdaySeasonStandings } from '@/lib/data/tuesday';
 
-const PODIUM = [
-  { place: 2, medal: '🥈', color: 'text-gray-400 dark:text-gray-300', bg: 'bg-gray-300 dark:bg-gray-500', border: 'border-gray-300/40', rowBg: 'bg-gray-50 dark:bg-gray-400/10', height: 'h-20', order: 'order-1' },
-  { place: 1, medal: '🥇', color: 'text-yellow-500',                   bg: 'bg-yellow-400',                  border: 'border-yellow-400/40', rowBg: 'bg-yellow-50 dark:bg-yellow-400/10', height: 'h-32', order: 'order-2' },
-  { place: 3, medal: '🥉', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-600',                  border: 'border-amber-500/40',  rowBg: 'bg-amber-50 dark:bg-amber-600/10',  height: 'h-14', order: 'order-3' },
+const PODIUM_LAYOUT = [
+  { order: 'order-1' },
+  { order: 'order-2' },
+  { order: 'order-3' },
 ];
 
-const placeLabel: Record<number, string> = { 1: '🏆 Round Winner', 2: 'Runner Up', 3: '3rd Place' };
+const RANK_HEIGHT: Record<string, string> = {
+  '1': 'h-32', 'T1': 'h-32',
+  '2': 'h-20', 'T2': 'h-20',
+  '3': 'h-14', 'T3': 'h-14',
+};
+
+const RANK_STYLE: Record<string, { color: string; bg: string; border: string; rowBg: string }> = {
+  '1':  { color: 'text-yellow-500',                   bg: 'bg-yellow-400', border: 'border-yellow-400/40', rowBg: 'bg-yellow-50 dark:bg-yellow-400/10' },
+  'T1': { color: 'text-yellow-500',                   bg: 'bg-yellow-400', border: 'border-yellow-400/40', rowBg: 'bg-yellow-50 dark:bg-yellow-400/10' },
+  '2':  { color: 'text-gray-400 dark:text-gray-300',  bg: 'bg-gray-300 dark:bg-gray-500', border: 'border-gray-300/40', rowBg: 'bg-gray-50 dark:bg-gray-400/10' },
+  'T2': { color: 'text-gray-400 dark:text-gray-300',  bg: 'bg-gray-300 dark:bg-gray-500', border: 'border-gray-300/40', rowBg: 'bg-gray-50 dark:bg-gray-400/10' },
+  '3':  { color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-600', border: 'border-amber-500/40', rowBg: 'bg-amber-50 dark:bg-amber-600/10' },
+  'T3': { color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-600', border: 'border-amber-500/40', rowBg: 'bg-amber-50 dark:bg-amber-600/10' },
+};
+const FALLBACK_STYLE = { color: 'text-gray-400', bg: 'bg-gray-400', border: 'border-gray-400/40', rowBg: 'bg-gray-50 dark:bg-gray-400/10' };
+
+const RANK_MEDAL: Record<string, string> = {
+  '1': '🥇', 'T1': '🥇',
+  '2': '🥈', 'T2': '🥈',
+  '3': '🥉', 'T3': '🥉',
+};
+
+function getSeasonRank(entry: typeof tuesdaySeasonStandings[0]): string {
+  const roundWins = (e: typeof tuesdaySeasonStandings[0]) =>
+    e.roundPoints.filter(p => p === 3).length;
+  const playersAbove = tuesdaySeasonStandings.filter(e => e.totalPoints > entry.totalPoints);
+  const offset = playersAbove.reduce((sum, e) => sum + Math.max(roundWins(e), 1), 0);
+  const rank = offset + 1;
+  const tied = entry.totalPoints > 0 &&
+    tuesdaySeasonStandings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
+  return tied ? `T${rank}` : `${rank}`;
+}
 
 export default function RoundPodium() {
   const latestRound = tuesdayRounds.filter(r => r.completed).at(-1);
-  if (!latestRound || latestRound.results.length < 3) return null;
+  if (!latestRound || tuesdaySeasonStandings.length < 3) return null;
 
-  const scorers = latestRound.results.filter(r => r.pts > 0);
-  const first  = scorers[0] ?? null;
-  const second = scorers[1] ?? null;
-  const third  = scorers[2] ?? null;
+  // Podium reflects season standings
+  const first  = tuesdaySeasonStandings[0] ?? null;
+  const second = tuesdaySeasonStandings[1] ?? null;
+  const third  = tuesdaySeasonStandings[2] ?? null;
   const podiumEntries = [second, first, third];
+
+  // Latest round's top scorer for the round winner card
+  const roundWinner = latestRound.results[0] ?? null;
 
 
   return (
@@ -34,42 +68,46 @@ export default function RoundPodium() {
           className="text-center mb-10"
         >
           <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-2">
-            Round {latestRound.round} · {latestRound.dateDisplay}
+            After Round {latestRound.round} · {latestRound.dateDisplay}
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white tracking-tight">
-            Round Winners
+            Season Leaders
           </h2>
         </motion.div>
 
         {/* Podium */}
         <div className="flex items-end justify-center gap-3 sm:gap-6 mb-10">
-          {PODIUM.map((p, i) => {
+          {PODIUM_LAYOUT.map((layout, i) => {
             const entry = podiumEntries[i];
+            const rank = entry ? getSeasonRank(entry) : null;
+            const style = rank ? (RANK_STYLE[rank] ?? FALLBACK_STYLE) : FALLBACK_STYLE;
+            const medal = rank ? (RANK_MEDAL[rank] ?? '🏅') : '🏅';
+            const rankLabel = rank === '1' ? '1st' : rank === '2' ? '2nd' : rank === '3' ? '3rd' : (rank ?? '—');
+            const barLabel = rank === '1' ? '🏆 Season Leader' : rank ? rank : '—';
             return (
               <motion.div
-                key={p.place}
+                key={i}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`flex flex-col items-center ${p.order}`}
+                className={`flex flex-col items-center ${layout.order}`}
               >
                 <div className="text-center mb-2 px-1">
-                  <p className="text-lg sm:text-xl">{p.medal}</p>
+                  <p className="text-lg sm:text-xl">{medal}</p>
                   <p className="font-bold text-xs sm:text-sm text-white leading-tight mt-1 max-w-[90px] sm:max-w-[120px]">
                     {entry?.name ?? 'TBD'}
                   </p>
                   {entry && (
-                    <p className={`text-xs font-black mt-0.5 ${p.color}`}>
-                      {entry.pts % 1 === 0 ? entry.pts : entry.pts.toFixed(2)} pts
+                    <p className={`text-xs font-black mt-0.5 ${style.color}`}>
+                      {entry.totalPoints % 1 === 0 ? entry.totalPoints : entry.totalPoints.toFixed(2)} pts
                     </p>
                   )}
-
                 </div>
-                <div className={`w-24 sm:w-36 ${p.height} rounded-t-xl ${p.rowBg} border-t-2 ${p.border} flex items-center justify-center`}>
-                  <p className={`text-xs sm:text-sm font-black ${p.color}`}>{p.place === 1 ? '1st' : p.place === 2 ? '2nd' : '3rd'}</p>
+                <div className={`w-24 sm:w-36 ${rank ? (RANK_HEIGHT[rank] ?? 'h-14') : 'h-14'} rounded-t-xl ${style.rowBg} border-t-2 ${style.border} flex items-center justify-center`}>
+                  <p className={`text-xs sm:text-sm font-black ${style.color}`}>{rankLabel}</p>
                 </div>
-                <div className={`w-24 sm:w-36 py-1.5 rounded-b-xl ${p.bg} flex items-center justify-center`}>
-                  <p className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-wider">{placeLabel[p.place]}</p>
+                <div className={`w-24 sm:w-36 py-1.5 rounded-b-xl ${style.bg} flex items-center justify-center`}>
+                  <p className="text-[9px] sm:text-[10px] font-black text-white uppercase tracking-wider">{barLabel}</p>
                 </div>
               </motion.div>
             );
@@ -93,7 +131,7 @@ export default function RoundPodium() {
             <p className="font-display font-bold text-2xl text-white mb-1">{first?.name ?? 'TBD'}</p>
             {first && (
               <p className="text-fob-orange font-black text-lg">
-                {first.pts % 1 === 0 ? first.pts : first.pts.toFixed(2)} pts
+                {first.totalPoints % 1 === 0 ? first.totalPoints : first.totalPoints.toFixed(2)} pts
               </p>
             )}
           </motion.div>
@@ -110,7 +148,7 @@ export default function RoundPodium() {
               </div>
             </div>
             <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-2">Round {latestRound.round} Winner</p>
-            <p className="font-display font-bold text-2xl text-white mb-1">{first?.name ?? 'TBD'}</p>
+            <p className="font-display font-bold text-2xl text-white mb-1">{roundWinner?.name ?? 'TBD'}</p>
             <p className="text-fob-orange text-xs font-bold mt-1">{latestRound.dateDisplay} · {latestRound.location}</p>
           </motion.div>
         </div>
