@@ -15,17 +15,11 @@ const medalStyle: Record<string, { row: string; rank: string; medal: string }> =
 };
 
 function getDisplayRanks(standings: typeof tuesdaySeasonStandings): string[] {
-  // Each round win by a higher-ranked player occupies a separate slot.
-  // A player with 2 wins takes slots 1 & 2, pushing the next players to T3.
-  const roundWins = (e: typeof tuesdaySeasonStandings[0]) =>
-    e.roundPoints.filter(p => p === 3).length;
-
   return standings.map((entry) => {
-    const playersAbove = standings.filter(e => e.totalPoints > entry.totalPoints);
-    const offset = playersAbove.reduce((sum, e) => sum + Math.max(roundWins(e), 1), 0);
-    const rank = offset + 1;
-    const tied = entry.totalPoints > 0 && standings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
-    return tied ? `T${rank}` : `${rank}`;
+    const above = standings.filter(e => e.totalPoints > entry.totalPoints).length;
+    const equal = standings.filter(e => e.totalPoints === entry.totalPoints).length;
+    const tied = equal > 1;
+    return tied ? `T${above + equal}` : `${above + equal}`;
   });
 }
 

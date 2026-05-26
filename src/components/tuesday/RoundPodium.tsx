@@ -33,13 +33,8 @@ const RANK_MEDAL: Record<string, string> = {
 };
 
 function getSeasonRank(entry: typeof tuesdaySeasonStandings[0]): string {
-  const roundWins = (e: typeof tuesdaySeasonStandings[0]) =>
-    e.roundPoints.filter(p => p === 3).length;
-  const playersAbove = tuesdaySeasonStandings.filter(e => e.totalPoints > entry.totalPoints);
-  const offset = playersAbove.reduce((sum, e) => sum + Math.max(roundWins(e), 1), 0);
-  const rank = offset + 1;
-  const tied = entry.totalPoints > 0 &&
-    tuesdaySeasonStandings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
+  const rank = tuesdaySeasonStandings.filter(e => e.totalPoints > entry.totalPoints).length + 1;
+  const tied = tuesdaySeasonStandings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
   return tied ? `T${rank}` : `${rank}`;
 }
 
@@ -50,8 +45,12 @@ export default function RoundPodium() {
   // Podium reflects season standings
   const first  = tuesdaySeasonStandings[0] ?? null;
   const second = tuesdaySeasonStandings[1] ?? null;
-  const third  = tuesdaySeasonStandings[2] ?? null;
-  const podiumEntries = [second, first, third];
+  const thirdCandidate = tuesdaySeasonStandings[2] ?? null;
+  const thirdIsTied = thirdCandidate
+    ? tuesdaySeasonStandings.filter(e => e.totalPoints === thirdCandidate.totalPoints).length > 1
+    : false;
+  const third = thirdIsTied ? null : thirdCandidate;
+  const podiumEntries = third ? [second, first, third] : [second, first];
 
   // Latest round's top scorer for the round winner card
   const roundWinner = latestRound.results[0] ?? null;
@@ -80,10 +79,11 @@ export default function RoundPodium() {
           {PODIUM_LAYOUT.map((layout, i) => {
             const entry = podiumEntries[i];
             const rank = entry ? getSeasonRank(entry) : null;
-            const style = rank ? (RANK_STYLE[rank] ?? FALLBACK_STYLE) : FALLBACK_STYLE;
-            const medal = rank ? (RANK_MEDAL[rank] ?? '🏅') : '🏅';
-            const rankLabel = rank === '1' ? '1st' : rank === '2' ? '2nd' : rank === '3' ? '3rd' : (rank ?? '—');
-            const barLabel = rank === '1' ? '🏆 Season Leader' : rank ? rank : '—';
+            const isTbdThird = !entry && i === 2;
+            const style = rank ? (RANK_STYLE[rank] ?? FALLBACK_STYLE) : (isTbdThird ? RANK_STYLE['3'] : FALLBACK_STYLE);
+            const medal = rank ? (RANK_MEDAL[rank] ?? '🏅') : (isTbdThird ? '🥉' : '🏅');
+            const rankLabel = rank === '1' ? '1st' : rank === '2' ? '2nd' : rank === '3' ? '3rd' : (isTbdThird ? '3rd' : (rank ?? '—'));
+            const barLabel = rank === '1' ? '🏆 Season Leader' : rank ? rank : (isTbdThird ? 'TBD' : '—');
             return (
               <motion.div
                 key={i}
