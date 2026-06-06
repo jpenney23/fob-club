@@ -12,10 +12,10 @@ const medals: Record<number, { bg: string; text: string; border: string; row: st
 };
 
 function getDisplayRanks(entries: typeof leaderboardEntries): { rank: number; display: string }[] {
+  const uniqueTotals = [...new Set(entries.map(e => e.total))].sort((a, b) => a - b);
   return entries.map(entry => {
-    const better = entries.filter(e => e.total < entry.total).length;
-    const equal  = entries.filter(e => e.total === entry.total).length;
-    const rank   = better + 1;
+    const rank  = uniqueTotals.indexOf(entry.total) + 1;
+    const equal = entries.filter(e => e.total === entry.total).length;
     return { rank, display: equal > 1 ? `T${rank}` : `${rank}` };
   });
 }

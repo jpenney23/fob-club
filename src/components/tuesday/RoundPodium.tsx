@@ -33,9 +33,10 @@ const RANK_MEDAL: Record<string, string> = {
 };
 
 function getSeasonRank(entry: typeof tuesdaySeasonStandings[0]): string {
-  const rank = tuesdaySeasonStandings.filter(e => e.totalPoints > entry.totalPoints).length + 1;
-  const tied = tuesdaySeasonStandings.filter(e => e.totalPoints === entry.totalPoints).length > 1;
-  return tied ? `T${rank}` : `${rank}`;
+  const uniqueScores = [...new Set(tuesdaySeasonStandings.map(e => e.totalPoints))].sort((a, b) => b - a);
+  const rank  = uniqueScores.indexOf(entry.totalPoints) + 1;
+  const equal = tuesdaySeasonStandings.filter(e => e.totalPoints === entry.totalPoints).length;
+  return equal > 1 ? `T${rank}` : `${rank}`;
 }
 
 export default function RoundPodium() {

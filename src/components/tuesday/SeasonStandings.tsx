@@ -15,10 +15,11 @@ const medalStyle: Record<string, { row: string; rank: string; medal: string }> =
 };
 
 function getDisplayRanks(standings: typeof tuesdaySeasonStandings): string[] {
-  return standings.map((entry) => {
-    const above = standings.filter(e => e.totalPoints > entry.totalPoints).length;
+  const uniqueScores = [...new Set(standings.map(e => e.totalPoints))].sort((a, b) => b - a);
+  return standings.map(entry => {
+    const rank  = uniqueScores.indexOf(entry.totalPoints) + 1;
     const equal = standings.filter(e => e.totalPoints === entry.totalPoints).length;
-    return equal > 1 ? `T${above + 1}` : `${above + 1}`;
+    return equal > 1 ? `T${rank}` : `${rank}`;
   });
 }
 
