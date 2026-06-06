@@ -18,8 +18,7 @@ function getDisplayRanks(standings: typeof tuesdaySeasonStandings): string[] {
   return standings.map((entry) => {
     const above = standings.filter(e => e.totalPoints > entry.totalPoints).length;
     const equal = standings.filter(e => e.totalPoints === entry.totalPoints).length;
-    const tied = equal > 1;
-    return tied ? `T${above + equal}` : `${above + equal}`;
+    return equal > 1 ? `T${above + 1}` : `${above + 1}`;
   });
 }
 
