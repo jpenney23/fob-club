@@ -7,7 +7,7 @@ import SlotCard from './SlotCard';
 import StatusBadge from './StatusBadge';
 import CalendarView from './CalendarView';
 
-const legend = ['open', 'pending', 'confirmed', 'locked'] as const;
+const legend = ['open', 'pending', 'confirmed', 'completed'] as const;
 
 export default function ScheduleGrid() {
   const [view, setView] = useState<'timeline' | 'calendar'>('timeline');
@@ -63,7 +63,7 @@ export default function ScheduleGrid() {
         {view === 'timeline' ? (
           <div>
             {leagueSlots.map((slot, i) => (
-              <SlotCard key={slot.id} slot={slot} index={i} />
+              <SlotCard key={slot.id} slot={slot} index={i} total={leagueSlots.length} />
             ))}
           </div>
         ) : (

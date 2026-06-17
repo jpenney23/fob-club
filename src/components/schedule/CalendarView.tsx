@@ -9,6 +9,7 @@ const statusDot: Record<string, string> = {
   pending:   'bg-yellow-500',
   confirmed: 'bg-blue-500',
   locked:    'bg-red-500',
+  completed: 'bg-amber-500',
 };
 
 const months = [

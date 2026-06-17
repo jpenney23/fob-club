@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Clock, User, X, Mail } from 'lucide-react';
+import { MapPin, Clock, User, X, Mail, Trophy, ArrowRight } from 'lucide-react';
 import { LeagueSlot } from '@/lib/data/schedule';
 import StatusBadge from './StatusBadge';
 
@@ -57,7 +58,7 @@ function JoinModal({ slot, onClose }: { slot: LeagueSlot; onClose: () => void })
   );
 }
 
-export default function SlotCard({ slot, index }: { slot: LeagueSlot; index: number }) {
+export default function SlotCard({ slot, index, total }: { slot: LeagueSlot; index: number; total: number }) {
   const [showModal, setShowModal] = useState(false);
   const canJoin = slot.status === 'open' || slot.status === 'confirmed';
 
@@ -75,7 +76,7 @@ export default function SlotCard({ slot, index }: { slot: LeagueSlot; index: num
           <div className="w-10 h-10 rounded-full bg-fob-dark-navy dark:bg-fob-orange/20 border-2 border-fob-orange flex items-center justify-center z-10">
             <span className="text-fob-orange font-black text-xs">{slot.round}</span>
           </div>
-          {index < 7 && <div className="w-px flex-1 mt-1 bg-fob-orange/20" />}
+          {index < total - 1 && <div className="w-px flex-1 mt-1 bg-fob-orange/20" />}
         </div>
 
         {/* Card */}
@@ -136,6 +137,22 @@ export default function SlotCard({ slot, index }: { slot: LeagueSlot; index: num
           {slot.status === 'locked' && (
             <div className="border-t border-gray-100 dark:border-white/10 pt-4">
               <span className="text-xs text-red-500 font-semibold">This round is locked — no spots available</span>
+            </div>
+          )}
+
+          {slot.status === 'completed' && (
+            <div className="border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-fob-orange">
+                <Trophy className="size-3.5" /> Event Complete
+              </span>
+              {slot.resultsHref && (
+                <Link
+                  href={slot.resultsHref}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-fob-dark-navy dark:text-white hover:text-fob-orange dark:hover:text-fob-orange transition-colors"
+                >
+                  View Results <ArrowRight className="size-3.5" />
+                </Link>
+              )}
             </div>
           )}
         </div>

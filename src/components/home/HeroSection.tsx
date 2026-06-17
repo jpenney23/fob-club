@@ -76,10 +76,10 @@ export default function HeroSection() {
             <ArrowRight className="size-4" />
           </Link>
           <Link
-            href="/leaderboard"
+            href="/travel-league"
             className="btn-outline-gold touch-manipulation"
           >
-            View Leaderboard
+            Travel League
           </Link>
         </motion.div>
       </div>

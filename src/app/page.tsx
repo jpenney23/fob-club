@@ -3,7 +3,7 @@ import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/home/HeroSection";
 import LeagueStats from "@/components/home/LeagueStats";
 import SchedulePreview from "@/components/home/SchedulePreview";
-import SeasonSpotlight from "@/components/leaderboard/SeasonSpotlight";
+import TravelLeagueSpotlight from "@/components/travel/TravelLeagueSpotlight";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import NewsletterSection from "@/components/home/NewsletterSection";
 
@@ -15,7 +15,7 @@ export default function Home() {
         <HeroSection />
         <LeagueStats />
         <SchedulePreview />
-        <SeasonSpotlight />
+        <TravelLeagueSpotlight />
         <TestimonialsSection />
         <NewsletterSection />
       </main>

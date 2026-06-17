@@ -9,7 +9,7 @@ import ThemeToggle from './ThemeToggle';
 
 const navigation = [
   { name: 'Schedule', href: '/schedule' },
-  { name: 'Leaderboard', href: '/leaderboard' },
+  { name: 'Travel League', href: '/travel-league' },
   { name: 'Tuesday League', href: '/tuesday' },
 ];
 

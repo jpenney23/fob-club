@@ -1,4 +1,4 @@
-export type SlotStatus = 'open' | 'pending' | 'confirmed' | 'locked';
+export type SlotStatus = 'open' | 'pending' | 'confirmed' | 'locked' | 'completed';
 
 export interface LeagueSlot {
   id: string;
@@ -10,32 +10,25 @@ export interface LeagueSlot {
   teeTimeWindow: string;
   status: SlotStatus;
   notes?: string;
+  resultsHref?: string;
 }
 
 export const leagueSlots: LeagueSlot[] = [
   {
-    id: 'slot-1',
+    id: 'slot-saratoga',
     round: 1,
-    date: '2026-06-08',
-    dateDisplay: 'June 8, 2026',
-    club: 'TBD',
-    host: null,
-    teeTimeWindow: 'TBD',
-    status: 'open',
+    date: '2026-06-10',
+    dateDisplay: 'June 10–12, 2026',
+    club: 'Saratoga National Golf Club',
+    host: 'FOB Travel League',
+    teeTimeWindow: 'Three Rounds',
+    status: 'completed',
+    notes: 'Saratoga Invitational — Champions: Bill Garofano & Hennessy. See the full flight results on the Travel League page.',
+    resultsHref: '/travel-league',
   },
   {
     id: 'slot-2',
     round: 2,
-    date: '2026-06-22',
-    dateDisplay: 'June 22, 2026',
-    club: 'TBD',
-    host: null,
-    teeTimeWindow: 'TBD',
-    status: 'open',
-  },
-  {
-    id: 'slot-3',
-    round: 3,
     date: '2026-07-06',
     dateDisplay: 'July 6, 2026',
     club: 'TBD',
@@ -44,8 +37,8 @@ export const leagueSlots: LeagueSlot[] = [
     status: 'pending',
   },
   {
-    id: 'slot-4',
-    round: 4,
+    id: 'slot-3',
+    round: 3,
     date: '2026-07-30',
     dateDisplay: 'July 30, 2026',
     club: 'LeBarron Hills CC',
@@ -54,8 +47,8 @@ export const leagueSlots: LeagueSlot[] = [
     status: 'confirmed',
   },
   {
-    id: 'slot-5',
-    round: 5,
+    id: 'slot-4',
+    round: 4,
     date: '2026-08-12',
     dateDisplay: 'August 12, 2026',
     club: 'Plymouth CC',
@@ -64,8 +57,8 @@ export const leagueSlots: LeagueSlot[] = [
     status: 'confirmed',
   },
   {
-    id: 'slot-6',
-    round: 6,
+    id: 'slot-5',
+    round: 5,
     date: '2026-08-20',
     dateDisplay: 'August 20, 2026',
     club: 'Kernwood CC',
@@ -74,8 +67,8 @@ export const leagueSlots: LeagueSlot[] = [
     status: 'confirmed',
   },
   {
-    id: 'slot-7',
-    round: 7,
+    id: 'slot-6',
+    round: 6,
     date: '2026-09-07',
     dateDisplay: 'September 7, 2026',
     club: 'TBD',
@@ -84,8 +77,8 @@ export const leagueSlots: LeagueSlot[] = [
     status: 'open',
   },
   {
-    id: 'slot-8',
-    round: 8,
+    id: 'slot-7',
+    round: 7,
     date: '2026-09-21',
     dateDisplay: 'September 21, 2026',
     club: 'Bellevue Golf Club',

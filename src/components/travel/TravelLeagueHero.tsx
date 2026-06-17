@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { Trophy } from 'lucide-react';
+import { featuredEvent } from '@/lib/data/travel';
 
-export default function LeaderboardHero() {
+export default function TravelLeagueHero() {
   return (
     <section className="relative pt-32 pb-16 overflow-hidden bg-background">
       <div className="absolute inset-0 hidden dark:block bg-[radial-gradient(ellipse_80%_80%_at_50%_40%,#1C3D2A_0%,#0F2318_100%)]" />
@@ -27,7 +29,7 @@ export default function LeaderboardHero() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="text-fob-orange text-xs font-bold tracking-[0.3em] uppercase mb-3"
         >
-          FOB League 2026
+          FOB {featuredEvent.year}
         </motion.p>
 
         <motion.h1
@@ -36,19 +38,22 @@ export default function LeaderboardHero() {
           transition={{ duration: 0.7, delay: 0.25 }}
           className="font-display font-bold text-4xl md:text-6xl text-fob-dark-navy dark:text-white tracking-tight mb-4"
         >
-          Leaderboard
+          Travel League
         </motion.h1>
 
-        <div className="fob-divider mb-4"><div className="fob-divider-diamond" /></div>
+        <div className="fob-divider mb-5"><div className="fob-divider-diamond" /></div>
 
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-fob-dark-navy/50 dark:text-white/60 text-xs tracking-[0.25em] uppercase"
+          className="inline-flex items-center gap-2 rounded-full border border-fob-orange/30 bg-fob-orange/10 px-4 py-1.5"
         >
-          Season Standings &nbsp;·&nbsp; Tournament Results &nbsp;·&nbsp; Top Players
-        </motion.p>
+          <Trophy className="size-3.5 text-fob-orange" />
+          <span className="text-fob-dark-navy dark:text-white/80 text-xs font-bold tracking-wide uppercase">
+            {featuredEvent.name} &nbsp;·&nbsp; {featuredEvent.dates}
+          </span>
+        </motion.div>
       </div>
     </section>
   );

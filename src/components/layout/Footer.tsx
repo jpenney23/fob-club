@@ -32,8 +32,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/leaderboard" className="text-gray-500 hover:text-fob-dark-navy dark:text-white/80 dark:hover:text-white text-sm transition-colors">
-                  Leaderboard
+                <Link href="/travel-league" className="text-gray-500 hover:text-fob-dark-navy dark:text-white/80 dark:hover:text-white text-sm transition-colors">
+                  Travel League
                 </Link>
               </li>
               <li>
@@ -57,7 +57,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 justify-center md:justify-start">
                 <Mail className="size-4 text-fob-orange mt-0.5 shrink-0" />
-                <span className="text-gray-600 dark:text-white/80 text-sm">info@fob.club</span>
+                <span className="text-gray-600 dark:text-white/80 text-sm">info@fobcharity.com</span>
               </li>
             </ul>
           </div>
