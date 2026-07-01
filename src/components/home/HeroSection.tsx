@@ -62,7 +62,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.35 }}
           className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-10"
         >
-          Greater Boston's premier member golf league. 100 players, 8 rounds across premier courses — season runs June through September.
+          Greater Boston's premier member golf league. 100 players, 6 rounds across premier courses — season runs June through October.
         </motion.p>
 
         <motion.div

@@ -17,6 +17,7 @@ const months = [
   { name: 'July',      year: 2026, month: 6 },
   { name: 'August',    year: 2026, month: 7 },
   { name: 'September', year: 2026, month: 8 },
+  { name: 'October',   year: 2026, month: 9 },
 ];
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

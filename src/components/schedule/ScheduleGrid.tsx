@@ -18,7 +18,7 @@ export default function ScheduleGrid() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-2">June – September 2026</p>
+          <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-2">June – October 2026</p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-fob-dark-navy dark:text-white tracking-tight">
             2026 League Schedule
           </h2>

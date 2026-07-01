@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   title: "FOB Golf League | fob.club",
   description:
-    "The Friends of Bellevue Golf League — 100 players, 8 rounds, premier courses across Greater Boston. Season standings, schedule, and more.",
+    "The Friends of Bellevue Golf League — 100 players, 6 rounds, premier courses across Greater Boston. Season standings, schedule, and more.",
   keywords: [
     "FOB Golf League",
     "Friends of Bellevue",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FOB Golf League",
     description:
-      "100 players. 8 rounds. Premier courses. The FOB Golf League — Greater Boston's premier member golf league.",
+      "100 players. 6 rounds. Premier courses. The FOB Golf League — Greater Boston's premier member golf league.",
     type: "website",
     images: [
       {

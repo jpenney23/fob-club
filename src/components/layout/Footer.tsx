@@ -16,7 +16,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed">
-              Greater Boston's premier member golf league. 100 players, 8 rounds, premier courses — season runs June through September.
+              Greater Boston's premier member golf league. 100 players, 6 rounds, premier courses — season runs June through October.
             </p>
           </div>
 
