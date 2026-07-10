@@ -12,9 +12,9 @@ const testimonials = [
     initials: "BR",
   },
   {
-    quote: "Boca Grove and St. Andrews in the Winter League — fantastic courses. St. Andrews is rated #8 most expensive in Florida, and I heard Adios (#4 most expensive) could be on the calendar this winter's Florida League. All great experiences of a lifetime!! Can't wait to go next year.",
+    quote: "Boca Grove and St. Andrews in the Winter Series — fantastic courses. St. Andrews is rated #8 most expensive in Florida, and I heard Adios (#4 most expensive) could be on the calendar this winter's Florida Series. All great experiences of a lifetime!! Can't wait to go next year.",
     name: "Mark Cassino",
-    role: "Winter League · March 2026",
+    role: "Winter Series · March 2026",
     initials: "MC",
   },
   {

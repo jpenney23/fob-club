@@ -12,7 +12,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src="/images/hero.jpg"
-          alt="FOB Golf League"
+          alt="FOB Golf Club"
           fill
           className="object-cover opacity-20"
           priority
@@ -30,7 +30,7 @@ export default function HeroSection() {
           <div className="relative w-28 h-28 md:w-36 md:h-36">
             <Image
               src="/images/fob-club-logo.png"
-              alt="FOB Golf League"
+              alt="FOB Golf Club"
               fill
               className="object-contain drop-shadow-2xl"
               priority
@@ -53,7 +53,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-display font-bold text-5xl md:text-7xl text-white tracking-tight leading-tight mb-6"
         >
-          FOB Golf League
+          FOB Golf Club
         </motion.h1>
 
         <motion.p
@@ -62,7 +62,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.35 }}
           className="text-white/70 text-lg md:text-xl max-w-2xl mx-auto mb-10"
         >
-          Greater Boston's premier member golf league. 100 players, 6 rounds across premier courses — season runs June through October.
+          Greater Boston's premier member golf club. 100 players, 6 rounds across premier courses — season runs June through October.
         </motion.p>
 
         <motion.div
@@ -79,7 +79,7 @@ export default function HeroSection() {
             href="/travel-league"
             className="btn-outline-gold touch-manipulation"
           >
-            Travel League
+            Travel
           </Link>
         </motion.div>
       </div>

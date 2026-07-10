@@ -38,7 +38,7 @@ export default function TravelLeagueHero() {
           transition={{ duration: 0.7, delay: 0.25 }}
           className="font-display font-bold text-4xl md:text-6xl text-fob-dark-navy dark:text-white tracking-tight mb-4"
         >
-          Travel League
+          Travel
         </motion.h1>
 
         <div className="fob-divider mb-5"><div className="fob-divider-diamond" /></div>

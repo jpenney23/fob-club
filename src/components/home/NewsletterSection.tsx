@@ -23,11 +23,11 @@ export default function NewsletterSection() {
           </div>
           <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-3">Stay in the Loop</p>
           <h2 className="font-display font-bold text-4xl md:text-5xl text-fob-dark-navy dark:text-white tracking-tight mb-4">
-            League Updates
+            Club Updates
           </h2>
           <div className="fob-accent-bar mx-auto" />
           <p className="text-gray-600 dark:text-gray-300 max-w-md mx-auto mb-8">
-            Get notified about round schedules, leaderboard updates, and league announcements.
+            Get notified about round schedules, leaderboard updates, and club announcements.
           </p>
 
           {submitted ? (

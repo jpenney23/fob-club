@@ -11,19 +11,19 @@ export default function Footer() {
             <div className="flex items-center gap-3 justify-center md:justify-start">
               <span className="text-2xl">⛳</span>
               <div>
-                <p className="font-bold text-lg leading-tight text-fob-dark-navy dark:text-white">FOB Golf League</p>
+                <p className="font-bold text-lg leading-tight text-fob-dark-navy dark:text-white">FOB Golf Club</p>
                 <p className="text-sm text-gray-500 dark:text-white/80">fob.club</p>
               </div>
             </div>
             <p className="text-gray-600 dark:text-white/70 text-sm leading-relaxed">
-              Greater Boston's premier member golf league. 100 players, 6 rounds, premier courses — season runs June through October.
+              Greater Boston's premier member golf club. 100 players, 6 rounds, premier courses — season runs June through October.
             </p>
           </div>
 
           {/* Navigation */}
           <div className="text-center md:text-left">
             <h3 className="font-semibold text-fob-dark-navy dark:text-white/90 mb-4 text-sm uppercase tracking-wider">
-              League
+              Club
             </h3>
             <ul className="space-y-2">
               <li>
@@ -33,7 +33,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/travel-league" className="text-gray-500 hover:text-fob-dark-navy dark:text-white/80 dark:hover:text-white text-sm transition-colors">
-                  Travel League
+                  Travel
                 </Link>
               </li>
               <li>
@@ -65,7 +65,7 @@ export default function Footer() {
 
         <div className="mt-6 md:mt-12 pt-6 md:pt-8 border-t border-gray-100 dark:border-white/10 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
           <p className="text-gray-400 dark:text-white/40 text-sm text-center sm:text-left">
-            © 2026 FOB Golf League. All rights reserved.
+            © 2026 FOB Golf Club. All rights reserved.
           </p>
           <p className="text-gray-400 dark:text-white/40 text-xs">
             Built with <Heart className="size-3 inline text-fob-orange mx-0.5" /> for the community

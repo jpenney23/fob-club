@@ -20,7 +20,7 @@ export default function TravelLeagueSpotlight() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
-          <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-3">Travel League</p>
+          <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-3">Travel</p>
           <h2 className="font-display font-bold text-3xl md:text-5xl text-white tracking-tight">
             {e.name} {e.year}
           </h2>

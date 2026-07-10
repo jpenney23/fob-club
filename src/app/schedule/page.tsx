@@ -6,7 +6,7 @@ import ScheduleGrid from '@/components/schedule/ScheduleGrid';
 
 export const metadata: Metadata = {
   title: 'Club Schedule | Friends of Bellevue',
-  description: 'FOB League 2026 schedule — 6 rounds across premier courses, June through October.',
+  description: 'FOB Club 2026 schedule — 6 rounds across premier courses, June through October.',
 };
 
 export default function SchedulePage() {

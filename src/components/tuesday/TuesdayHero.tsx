@@ -31,7 +31,7 @@ export default function TuesdayHero() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="font-display font-bold text-4xl md:text-6xl text-white tracking-tight leading-tight mb-3"
         >
-          Tuesday 9 Hole League
+          Tuesday 9 Hole
         </motion.h1>
 
         <motion.p

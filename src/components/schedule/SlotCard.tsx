@@ -7,7 +7,12 @@ import { MapPin, Clock, User, X, Mail, Trophy, ArrowRight } from 'lucide-react';
 import { LeagueSlot } from '@/lib/data/schedule';
 import StatusBadge from './StatusBadge';
 
+// Venmo universal link — opens the native Venmo app on phones, Venmo web on desktop.
+// Payments go to @FOBcharity (Friends of Bellevue).
+const VENMO_URL = 'https://venmo.com/code?user_id=4626060889031930260&created=1782919904';
+
 function JoinModal({ slot, onClose }: { slot: LeagueSlot; onClose: () => void }) {
+  const registrationOpen = slot.status === 'open';
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -35,24 +40,54 @@ function JoinModal({ slot, onClose }: { slot: LeagueSlot; onClose: () => void })
           </button>
         </div>
 
-        {/* Coming soon notice */}
-        <div className="bg-fob-orange/10 border border-fob-orange/30 rounded-xl p-4 mb-5">
-          <div className="flex items-center gap-2 mb-1">
-            <Mail className="size-4 text-fob-orange" />
-            <p className="text-fob-orange font-bold text-xs uppercase tracking-wider">Registration Opening Soon</p>
-          </div>
-          <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
-            Online registration and payment are coming soon. Contact us to express interest and we'll get back to you within <span className="font-bold text-fob-dark-navy dark:text-white">24 business hours</span> with everything you need to join.
-          </p>
-        </div>
+        {registrationOpen ? (
+          <>
+            {/* Registration open — payment goes directly to FOB */}
+            <div className="bg-fob-orange/10 border border-fob-orange/30 rounded-xl p-4 mb-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Mail className="size-4 text-fob-orange" />
+                <p className="text-fob-orange font-bold text-xs uppercase tracking-wider">Registration Open</p>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                To lock in your spot, send your payment directly to FOB via Venmo{' '}
+                <span className="font-bold text-fob-dark-navy dark:text-white">@FOBcharity</span>
+                {' '}and email us your name and the round you&apos;re joining.
+              </p>
+            </div>
 
-        <p className="text-center text-xs text-gray-400 dark:text-gray-500 mb-5">
-          Payment via Stripe — coming soon
-        </p>
+            <a
+              href={VENMO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full btn-gold text-center mb-3"
+            >
+              Pay with Venmo — @FOBcharity
+            </a>
+            <a
+              href={`mailto:info@fobcharity.com?subject=${encodeURIComponent(`FOB Registration — ${slot.club} · ${slot.dateDisplay}`)}`}
+              className="block w-full btn-outline-gold text-center"
+            >
+              Email Us Your Registration
+            </a>
+          </>
+        ) : (
+          <>
+            {/* Coming soon notice */}
+            <div className="bg-fob-orange/10 border border-fob-orange/30 rounded-xl p-4 mb-5">
+              <div className="flex items-center gap-2 mb-1">
+                <Mail className="size-4 text-fob-orange" />
+                <p className="text-fob-orange font-bold text-xs uppercase tracking-wider">Registration Opening Soon</p>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                Registration for this round isn&apos;t open yet. Contact us to express interest and we&apos;ll get back to you within <span className="font-bold text-fob-dark-navy dark:text-white">24 business hours</span> with everything you need to join.
+              </p>
+            </div>
 
-        <button onClick={onClose} className="w-full btn-outline-gold">
-          Got It
-        </button>
+            <button onClick={onClose} className="w-full btn-outline-gold">
+              Got It
+            </button>
+          </>
+        )}
       </motion.div>
     </motion.div>
   );
@@ -80,7 +115,15 @@ export default function SlotCard({ slot, index, total }: { slot: LeagueSlot; ind
         </div>
 
         {/* Card */}
-        <div className="flex-1 bg-card border border-gray-100 dark:border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow mb-1">
+        <div className="relative overflow-hidden flex-1 bg-card border border-gray-100 dark:border-white/10 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow mb-1">
+          {/* Sold Out watermark stamp */}
+          {slot.status === 'locked' && (
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+              <span className="-rotate-12 rounded-lg border-4 border-red-500/40 px-6 py-2 font-black uppercase tracking-[0.25em] text-3xl sm:text-4xl text-red-500/40 select-none">
+                Sold Out
+              </span>
+            </div>
+          )}
           <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
             <div>
               <p className="text-fob-orange text-xs font-bold tracking-[0.2em] uppercase mb-0.5">Round {slot.round}</p>
@@ -129,14 +172,14 @@ export default function SlotCard({ slot, index, total }: { slot: LeagueSlot; ind
                 Join This Round
               </button>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 italic">
-                Registration & payment coming soon
+                {slot.status === 'open' ? 'Registration open — payments made directly to FOB' : 'Registration & payment coming soon'}
               </span>
             </div>
           )}
 
           {slot.status === 'locked' && (
             <div className="border-t border-gray-100 dark:border-white/10 pt-4">
-              <span className="text-xs text-red-500 font-semibold">This round is locked — no spots available</span>
+              <span className="text-xs text-red-500 font-semibold">Sold Out — no spots available</span>
             </div>
           )}
 

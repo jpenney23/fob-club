@@ -27,7 +27,7 @@ export default function LeagueFormat() {
         >
           <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-3">How It Works</p>
           <h2 className="font-display font-bold text-4xl md:text-5xl text-fob-dark-navy dark:text-white tracking-tight">
-            League Format
+            Scoring Format
           </h2>
           <div className="fob-accent-bar mx-auto" />
         </motion.div>

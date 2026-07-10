@@ -9,8 +9,8 @@ import ThemeToggle from './ThemeToggle';
 
 const navigation = [
   { name: 'Schedule', href: '/schedule' },
-  { name: 'Travel League', href: '/travel-league' },
-  { name: 'Tuesday League', href: '/tuesday' },
+  { name: 'Travel', href: '/travel-league' },
+  { name: 'Tuesday 9 Hole', href: '/tuesday' },
 ];
 
 export default function Header() {
@@ -32,10 +32,10 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 focus:outline-none min-w-0 shrink">
           <div className="relative h-10 w-10 flex-shrink-0">
-            <Image src="/images/fob-club-logo.png" alt="FOB Golf League" fill className="object-contain drop-shadow-sm" priority />
+            <Image src="/images/fob-club-logo.png" alt="FOB Golf Club" fill className="object-contain drop-shadow-sm" priority />
           </div>
           <span className="font-display font-bold text-sm leading-tight min-w-0 truncate tracking-wide" style={{ color: 'var(--header-text)' }}>
-            FOB Golf League
+            FOB Golf Club
           </span>
         </Link>
 

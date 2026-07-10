@@ -27,7 +27,7 @@ export default function ScheduleHero() {
           transition={{ duration: 0.5, delay: 0.15 }}
           className="text-fob-orange text-xs font-bold tracking-[0.3em] uppercase mb-3"
         >
-          FOB League 2026
+          FOB Club 2026
         </motion.p>
 
         <motion.h1
@@ -47,7 +47,7 @@ export default function ScheduleHero() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-fob-dark-navy/50 dark:text-white/60 text-xs tracking-[0.25em] uppercase"
         >
-          24 Players &nbsp;·&nbsp; Premier Courses &nbsp;·&nbsp; Networking for a Cause
+          Premier Courses &nbsp;·&nbsp; Networking for a Cause
         </motion.p>
       </div>
     </section>

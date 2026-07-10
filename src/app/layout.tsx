@@ -26,28 +26,28 @@ export const metadata: Metadata = {
     shortcut: '/favicon.ico',
     apple: '/icon.png',
   },
-  title: "FOB Golf League | fob.club",
+  title: "FOB Golf Club | fob.club",
   description:
-    "The Friends of Bellevue Golf League — 100 players, 6 rounds, premier courses across Greater Boston. Season standings, schedule, and more.",
+    "The Friends of Bellevue Golf Club — 100 players, 6 rounds, premier courses across Greater Boston. Season standings, schedule, and more.",
   keywords: [
-    "FOB Golf League",
+    "FOB Golf Club",
     "Friends of Bellevue",
-    "golf league",
+    "golf club",
     "Bellevue Golf Club",
     "Boston golf",
     "fob.club",
   ],
   openGraph: {
-    title: "FOB Golf League",
+    title: "FOB Golf Club",
     description:
-      "100 players. 6 rounds. Premier courses. The FOB Golf League — Greater Boston's premier member golf league.",
+      "100 players. 6 rounds. Premier courses. The FOB Golf Club — Greater Boston's premier member golf club.",
     type: "website",
     images: [
       {
         url: "/images/fob-club-logo.png",
         width: 800,
         height: 800,
-        alt: "FOB Golf League",
+        alt: "FOB Golf Club",
       },
     ],
   },

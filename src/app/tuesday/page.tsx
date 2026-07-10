@@ -8,8 +8,8 @@ import RoundResults from '@/components/tuesday/RoundResults';
 import LeagueFormat from '@/components/tuesday/LeagueFormat';
 
 export const metadata: Metadata = {
-  title: 'Tuesday 9 Hole League | fob.club',
-  description: 'FOB Tuesday 9 Hole League 2026 — season-long quota competition at Bellevue Golf Club. Weekly standings, round results, and scoring format.',
+  title: 'Tuesday 9 Hole | fob.club',
+  description: 'FOB Tuesday 9 Hole 2026 — season-long quota competition at Bellevue Golf Club. Weekly standings, round results, and scoring format.',
 };
 
 export default function TuesdayPage() {
