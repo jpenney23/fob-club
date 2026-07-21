@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { Crown, Trophy } from 'lucide-react';
-import { tuesdayRounds, tuesdaySeasonStandings } from '@/lib/data/tuesday';
+import { tuesdaySessions, getTuesdaySession, fmtPts } from '@/lib/data/tuesday';
+import { useTuesdaySession } from './TuesdaySessionContext';
 
 const PODIUM_LAYOUT = [
   { order: 'order-1' },
@@ -33,19 +34,24 @@ const RANK_MEDAL: Record<string, string> = {
 };
 
 export default function RoundPodium() {
-  const latestRound = tuesdayRounds.filter(r => r.completed).at(-1);
-  if (!latestRound || tuesdaySeasonStandings.length < 3) return null;
+  const { activeSession, setActiveSession } = useTuesdaySession();
+  const session = getTuesdaySession(activeSession);
+  const isComplete = session.status === 'Complete';
 
-  // Podium reflects season standings — top 3 score groups, tied players share a step
+  const latestRound = session.rounds.filter(r => r.completed).at(-1);
+  const standings = session.standings;
+  if (!latestRound || standings.length < 3) return null;
+
+  // Podium reflects the selected session's standings — top 3 score groups, tied players share a step
   const scoreGroups = [...new Set(
-    tuesdaySeasonStandings.filter(e => e.totalPoints > 0).map(e => e.totalPoints),
+    standings.filter(e => e.totalPoints > 0).map(e => e.totalPoints),
   )]
     .sort((a, b) => b - a)
     .slice(0, 3)
     .map((pts, i) => ({
       rank: i + 1,
       pts,
-      players: tuesdaySeasonStandings.filter(e => e.totalPoints === pts),
+      players: standings.filter(e => e.totalPoints === pts),
     }));
 
   // Left to right: 2nd, 1st, 3rd
@@ -57,27 +63,53 @@ export default function RoundPodium() {
   // Latest round's top scorer for the round winner card
   const roundWinner = latestRound.results[0] ?? null;
 
-
   return (
     <section className="bg-fob-dark-navy py-12 md:py-16 border-t border-white/8">
       <div className="mx-auto max-w-4xl px-6 lg:px-8">
 
+        {/* Session toggle */}
+        <div className="flex justify-center gap-2 mb-6">
+          {tuesdaySessions.map(s => (
+            <button
+              key={s.id}
+              onClick={() => setActiveSession(s.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide transition-all ${
+                activeSession === s.id
+                  ? 'bg-fob-orange text-fob-dark-navy shadow-md'
+                  : 'bg-white/10 text-white/60 hover:bg-white/15'
+              }`}
+            >
+              {s.label}
+              <span className={`text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
+                activeSession === s.id
+                  ? 'bg-fob-dark-navy/15 text-fob-dark-navy'
+                  : s.status === 'Live'
+                    ? 'bg-green-400/15 text-green-400'
+                    : 'bg-white/10 text-white/40'
+              }`}>
+                {s.status}
+              </span>
+            </button>
+          ))}
+        </div>
+
         <motion.div
+          key={`head-${activeSession}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
           <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-2">
-            After Round {latestRound.round} · {latestRound.dateDisplay}
+            {session.label} · {isComplete ? 'Final Standings' : `After Round ${latestRound.sessionRound}`} · {latestRound.dateDisplay}
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white tracking-tight">
-            Season Leaders
+            {session.label} Leaders
           </h2>
         </motion.div>
 
         {/* Podium */}
-        <div className="flex items-end justify-center gap-3 sm:gap-6 mb-10">
+        <div key={`podium-${activeSession}`} className="flex items-end justify-center gap-3 sm:gap-6 mb-10">
           {PODIUM_LAYOUT.map((layout, i) => {
             const group = podiumSlots[i];
             const rankNum = slotRanks[i];
@@ -86,10 +118,14 @@ export default function RoundPodium() {
             const style = RANK_STYLE[`${rankNum}`] ?? FALLBACK_STYLE;
             const medal = RANK_MEDAL[`${rankNum}`] ?? '🏅';
             const rankLabel = group ? (tied ? `T${rankNum}` : ordinal) : ordinal;
-            const barLabel = !group ? 'TBD' : rankNum === 1 ? '🏆 Season Leader' : (tied ? `T${rankNum}` : `${rankNum}`);
+            const barLabel = !group
+              ? 'TBD'
+              : rankNum === 1
+                ? (isComplete ? '🏆 Session Champion' : '🏆 Session Leader')
+                : (tied ? `T${rankNum}` : `${rankNum}`);
             return (
               <motion.div
-                key={i}
+                key={`${activeSession}-${i}`}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
@@ -110,7 +146,7 @@ export default function RoundPodium() {
                   )}
                   {group && (
                     <p className={`text-xs font-black mt-0.5 ${style.color}`}>
-                      {group.pts % 1 === 0 ? group.pts : group.pts.toFixed(2)} {group.pts === 1 ? 'pt' : 'pts'}
+                      {fmtPts(group.pts)} {group.pts === 1 ? 'pt' : 'pts'}
                     </p>
                   )}
                 </div>
@@ -125,8 +161,8 @@ export default function RoundPodium() {
           })}
         </div>
 
-        {/* Spotlight cards — season leader + round winner */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Spotlight cards — session leader + round winner */}
+        <div key={`cards-${activeSession}`} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -139,7 +175,11 @@ export default function RoundPodium() {
               </div>
             </div>
             <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-2">
-              {first && first.players.length > 1 ? 'Season Leaders' : 'Season Leader'}
+              {(() => {
+                const multi = first && first.players.length > 1;
+                const noun = isComplete ? 'Champion' : 'Leader';
+                return `${session.label} ${noun}${multi ? 's' : ''}`;
+              })()}
             </p>
             {first ? (
               first.players.map(p => (
@@ -150,7 +190,7 @@ export default function RoundPodium() {
             )}
             {first && (
               <p className="text-fob-orange font-black text-lg">
-                {first.pts % 1 === 0 ? first.pts : first.pts.toFixed(2)} {first.pts === 1 ? 'pt' : 'pts'}
+                {fmtPts(first.pts)} {first.pts === 1 ? 'pt' : 'pts'}
               </p>
             )}
           </motion.div>
@@ -166,7 +206,7 @@ export default function RoundPodium() {
                 <Trophy className="size-4 text-fob-orange" />
               </div>
             </div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-2">Round {latestRound.round} Winner</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/40 mb-2">Round {latestRound.sessionRound} Winner</p>
             <p className="font-display font-bold text-2xl text-white mb-1">{roundWinner?.name ?? 'TBD'}</p>
             <p className="text-fob-orange text-xs font-bold mt-1">{latestRound.dateDisplay} · {latestRound.location}</p>
           </motion.div>

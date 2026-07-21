@@ -6,8 +6,10 @@ export interface TuesdayRoundResult {
   pts: number;
 }
 
-export interface TuesdayRound {
-  round: number;
+// Session 2 rounds are entered without pts — they're computed from field size + finish.
+type RawResult = Omit<TuesdayRoundResult, 'pts'> & { pts?: number };
+
+interface RawRound {
   date: string;
   dateDisplay: string;
   location: string;
@@ -15,6 +17,13 @@ export interface TuesdayRound {
   playerCount?: number;
   pot?: number;
   payouts?: { place: string; amount: number }[];
+  results: RawResult[];
+}
+
+export interface TuesdayRound extends RawRound {
+  round: number;         // season-wide round number (1-based)
+  session: 1 | 2;
+  sessionRound: number;  // round number within its session (1-based)
   results: TuesdayRoundResult[];
 }
 
@@ -22,15 +31,24 @@ export interface TuesdaySeasonEntry {
   name: string;
   roundPoints: (number | null)[];
   totalPoints: number;
+  droppedCount: number;  // # of mulligan-week (lowest) scores dropped from the total
 }
 
 export const TUESDAY_SEASON_START = 'May 19, 2026';
 export const TUESDAY_SEASON_END = 'August 30, 2026';
-export const TUESDAY_TOTAL_ROUNDS = 14;
+export const FOB_CUP_CHAMPIONSHIP = 'September 1, 2026';
 
-export const tuesdayRounds: TuesdayRound[] = [
+export const SESSION1_ROUNDS = 7;
+export const SESSION2_ROUNDS = 7;
+export const TUESDAY_TOTAL_ROUNDS = SESSION1_ROUNDS + SESSION2_ROUNDS;
+
+// Format points: whole numbers plain, fractions trimmed (8.20 -> 8.2, 0.75 -> 0.75)
+export const fmtPts = (n: number): string =>
+  Number.isInteger(n) ? String(n) : String(+n.toFixed(2));
+
+// ── Session 1 (May 19 – June 30) — complete. Legacy scoring: 1st 3, 2nd 2, 3rd 1, 4th 0.75.
+const session1Raw: RawRound[] = [
   {
-    round: 1,
     date: '2026-05-19',
     dateDisplay: 'May 19, 2026',
     location: 'Bellevue Golf Club',
@@ -46,7 +64,7 @@ export const tuesdayRounds: TuesdayRound[] = [
       { pos: '7',   name: 'Redler, William',      quotaDiff: -2,   gross: 45,   pts: 0 },
       { pos: '8',   name: 'McConaghy, Robert',    quotaDiff: -3,   gross: 46,   pts: 0 },
       { pos: '9',   name: 'Hastings, John',       quotaDiff: -3,   gross: 48,   pts: 0 },
-      { pos: 'T10', name: 'Iuliano, Anthony',      quotaDiff: -3,   gross: 46,   pts: 0 },
+      { pos: 'T10', name: 'Iuliano, Anthony',     quotaDiff: -3,   gross: 46,   pts: 0 },
       { pos: 'T10', name: 'Cassino, Mark',        quotaDiff: -3,   gross: 50,   pts: 0 },
       { pos: '11',  name: 'Catalagna, Paul',      quotaDiff: -3,   gross: 48,   pts: 0 },
       { pos: '12',  name: 'Arrigo, George',       quotaDiff: -4,   gross: 48,   pts: 0 },
@@ -55,7 +73,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 2,
     date: '2026-05-26',
     dateDisplay: 'May 26, 2026',
     location: 'Bellevue Golf Club',
@@ -81,7 +98,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 3,
     date: '2026-06-02',
     dateDisplay: 'June 2, 2026',
     location: 'Bellevue Golf Club',
@@ -114,7 +130,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 4,
     date: '2026-06-09',
     dateDisplay: 'June 9, 2026',
     location: 'Bellevue Golf Club',
@@ -128,7 +143,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 5,
     date: '2026-06-16',
     dateDisplay: 'June 16, 2026',
     location: 'Bellevue Golf Club',
@@ -155,7 +169,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 6,
     date: '2026-06-23',
     dateDisplay: 'June 23, 2026',
     location: 'Bellevue Golf Club',
@@ -181,7 +194,6 @@ export const tuesdayRounds: TuesdayRound[] = [
     ],
   },
   {
-    round: 7,
     date: '2026-06-30',
     dateDisplay: 'June 30, 2026',
     location: 'Bellevue Golf Club',
@@ -209,18 +221,96 @@ export const tuesdayRounds: TuesdayRound[] = [
       { pos: '12', name: 'Finocchiaro, Joe',  quotaDiff: -4, gross: 46, pts: 0 },
     ],
   },
-  ...Array.from({ length: 7 }, (_, i) => ({
-    round: i + 8,
+];
+
+// ── Session 2 (begins July 14) — clean slate, new FOB Cup point system.
+// Points are computed from field size + finish; do NOT hand-enter pts here.
+const session2Raw: RawRound[] = [
+  {
+    date: '2026-07-14',
+    dateDisplay: 'July 14, 2026',
+    location: 'Bellevue Golf Club',
+    completed: true,
+    playerCount: 8,
+    results: [
+      { pos: '1', name: 'Picardo, Steve',    quotaDiff: 4,  gross: 44 },
+      { pos: '2', name: 'Iuliano, Lou',      quotaDiff: 1,  gross: 45 },
+      { pos: '3', name: 'Zedros, Alexander', quotaDiff: 1,  gross: 47 },
+      { pos: '4', name: 'Hastings, John',    quotaDiff: -1, gross: 46 },
+      { pos: '5', name: 'McConaghy, Robert', quotaDiff: -2, gross: 43 },
+      { pos: '6', name: 'Finocchiaro, Joe',  quotaDiff: -2, gross: 43 },
+      { pos: '7', name: 'DeVirgilio, John',  quotaDiff: -3, gross: 48 },
+      { pos: '8', name: 'Masiello, Charles', quotaDiff: -3, gross: 51 },
+    ],
+  },
+  // Remaining Session 2 weeks — TBD
+  ...Array.from({ length: SESSION2_ROUNDS - 1 }, () => ({
     date: '',
     dateDisplay: 'TBD',
     location: 'Bellevue Golf Club',
     completed: false,
-    results: [] as TuesdayRoundResult[],
+    results: [] as RawResult[],
   })),
 ];
 
-// Players who participate in rounds but are not in the season-long league
-// (guests from non-Bellevue clubs)
+// FOB Cup Session 2 scoring:
+//   Points = (finish % × field size) + 1 participation point.
+//   1st = 100%, 2nd = 90% … 10th = 10%, 11th+ = 0% (participation only).
+//   Tied finishers share the average of the percentages they span.
+function computeSession2Points(results: RawResult[], fieldSize: number): number[] {
+  const pctForRank = (rank: number) => (rank <= 10 ? (100 - (rank - 1) * 10) / 100 : 0);
+  const pts: number[] = new Array(results.length).fill(0);
+  let i = 0;
+  while (i < results.length) {
+    let j = i;
+    while (j + 1 < results.length && results[j + 1].pos === results[i].pos) j++;
+    let sumPct = 0;
+    for (let rank = i + 1; rank <= j + 1; rank++) sumPct += pctForRank(rank);
+    const avgPct = sumPct / (j - i + 1);
+    const value = Math.round((avgPct * fieldSize + 1) * 100) / 100;
+    for (let k = i; k <= j; k++) pts[k] = value;
+    i = j + 1;
+  }
+  return pts;
+}
+
+function assembleRounds(): TuesdayRound[] {
+  const rounds: TuesdayRound[] = [];
+  let roundNum = 0;
+
+  session1Raw.forEach((r, i) => {
+    roundNum += 1;
+    rounds.push({
+      ...r,
+      round: roundNum,
+      session: 1,
+      sessionRound: i + 1,
+      results: r.results.map(res => ({ ...res, pts: res.pts ?? 0 })),
+    });
+  });
+
+  session2Raw.forEach((r, i) => {
+    roundNum += 1;
+    const fieldSize = r.playerCount ?? r.results.length;
+    const computed = computeSession2Points(r.results, fieldSize);
+    rounds.push({
+      ...r,
+      round: roundNum,
+      session: 2,
+      sessionRound: i + 1,
+      results: r.results.map((res, k) => ({ ...res, pts: computed[k] ?? 0 })),
+    });
+  });
+
+  return rounds;
+}
+
+export const tuesdayRounds: TuesdayRound[] = assembleRounds();
+
+export const tuesdaySession1Rounds = tuesdayRounds.filter(r => r.session === 1);
+export const tuesdaySession2Rounds = tuesdayRounds.filter(r => r.session === 2);
+
+// Players who compete but are not in the season-long league (guests from other clubs)
 const SEASON_EXCLUDED = new Set([
   'Iuliano, Anthony',   // USGA/Mass Golf GC
   'Pisano, John',
@@ -228,34 +318,90 @@ const SEASON_EXCLUDED = new Set([
   'Brennan, Peter',     // Indian Ridge Country Club
 ]);
 
-// Build season standings from round results
-function buildStandings(): TuesdaySeasonEntry[] {
+// Build session standings.
+//   applyMulligan: drop each player's two lowest weekly totals once they've
+//   played more than 2 rounds (the "two mulligan weeks per session" rule).
+function buildStandings(
+  rounds: TuesdayRound[],
+  totalRounds: number,
+  applyMulligan: boolean,
+): TuesdaySeasonEntry[] {
   const playerMap = new Map<string, (number | null)[]>();
 
-  // Initialize all known players
-  tuesdayRounds[0].results.forEach(r => {
-    if (SEASON_EXCLUDED.has(r.name)) return;
-    playerMap.set(r.name, Array(TUESDAY_TOTAL_ROUNDS).fill(null));
-  });
-
-  // Fill in round points
-  tuesdayRounds.forEach((round, ri) => {
+  rounds.forEach((round, ri) => {
     round.results.forEach(r => {
       if (SEASON_EXCLUDED.has(r.name)) return;
-      if (!playerMap.has(r.name)) {
-        playerMap.set(r.name, Array(TUESDAY_TOTAL_ROUNDS).fill(null));
-      }
+      if (!playerMap.has(r.name)) playerMap.set(r.name, Array(totalRounds).fill(null));
       playerMap.get(r.name)![ri] = r.pts;
     });
   });
 
   return Array.from(playerMap.entries())
-    .map(([name, roundPoints]) => ({
-      name,
-      roundPoints,
-      totalPoints: roundPoints.reduce<number>((sum, p) => sum + (p ?? 0), 0),
-    }))
+    .map(([name, roundPoints]) => {
+      const played = roundPoints.filter((p): p is number => p !== null);
+      let total = played.reduce((sum, p) => sum + p, 0);
+      let droppedCount = 0;
+
+      if (applyMulligan && played.length > 2) {
+        const sorted = [...played].sort((a, b) => a - b);
+        droppedCount = 2;
+        total -= sorted[0] + sorted[1];
+      }
+
+      return {
+        name,
+        roundPoints,
+        totalPoints: Math.round(total * 100) / 100,
+        droppedCount,
+      };
+    })
     .sort((a, b) => b.totalPoints - a.totalPoints);
 }
 
-export const tuesdaySeasonStandings = buildStandings();
+export const tuesdaySession1Standings = buildStandings(
+  tuesdaySession1Rounds,
+  SESSION1_ROUNDS,
+  false,
+);
+export const tuesdaySession2Standings = buildStandings(
+  tuesdaySession2Rounds,
+  SESSION2_ROUNDS,
+  true,
+);
+
+// Single source of truth for per-session UI (toggle, podium, standings)
+export type SessionId = 1 | 2;
+
+export interface TuesdaySessionMeta {
+  id: SessionId;
+  label: string;
+  status: 'Live' | 'Complete';
+  standings: TuesdaySeasonEntry[];
+  rounds: TuesdayRound[];
+  totalRounds: number;
+  scoringNote: string;
+}
+
+export const tuesdaySessions: TuesdaySessionMeta[] = [
+  {
+    id: 2,
+    label: 'Session 2',
+    status: 'Live',
+    standings: tuesdaySession2Standings,
+    rounds: tuesdaySession2Rounds,
+    totalRounds: SESSION2_ROUNDS,
+    scoringNote: 'Points = field size × finish % + 1 participation point · 2 mulligan weeks dropped',
+  },
+  {
+    id: 1,
+    label: 'Session 1',
+    status: 'Complete',
+    standings: tuesdaySession1Standings,
+    rounds: tuesdaySession1Rounds,
+    totalRounds: SESSION1_ROUNDS,
+    scoringNote: 'Session 1 is final — Lou Iuliano & Joe Finn advance to the FOB Cup Playoffs',
+  },
+];
+
+export const getTuesdaySession = (id: SessionId): TuesdaySessionMeta =>
+  tuesdaySessions.find(s => s.id === id) ?? tuesdaySessions[0];

@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { MapPin, Users } from 'lucide-react';
-import { tuesdayRounds } from '@/lib/data/tuesday';
+import { tuesdayRounds, fmtPts } from '@/lib/data/tuesday';
 
 const posStyle: Record<string, string> = {
   '1':  'bg-yellow-400/15 text-yellow-600 dark:text-yellow-400 font-black',
@@ -37,22 +37,33 @@ export default function RoundResults() {
           <div className="fob-accent-bar mx-auto" />
         </motion.div>
 
-        {/* Round tabs */}
+        {/* Round tabs — grouped by session */}
         {completedRounds.length > 1 && (
-          <div className="flex gap-2 mb-6 flex-wrap justify-center">
-            {completedRounds.map(r => (
-              <button
-                key={r.round}
-                onClick={() => setActiveRound(r.round)}
-                className={`px-4 py-2 rounded-full text-xs font-bold tracking-wide transition-all ${
-                  activeRound === r.round
-                    ? 'bg-fob-orange text-fob-dark-navy shadow-md'
-                    : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-fob-orange/10'
-                }`}
-              >
-                Round {r.round}
-              </button>
-            ))}
+          <div className="flex flex-col items-center gap-3 mb-6">
+            {([2, 1] as const).map(session => {
+              const sessionRounds = completedRounds.filter(r => r.session === session);
+              if (sessionRounds.length === 0) return null;
+              return (
+                <div key={session} className="flex items-center gap-2 flex-wrap justify-center">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 mr-1">
+                    Session {session}
+                  </span>
+                  {sessionRounds.map(r => (
+                    <button
+                      key={r.round}
+                      onClick={() => setActiveRound(r.round)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide transition-all ${
+                        activeRound === r.round
+                          ? 'bg-fob-orange text-fob-dark-navy shadow-md'
+                          : 'bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-gray-400 hover:bg-fob-orange/10'
+                      }`}
+                    >
+                      R{r.sessionRound}
+                    </button>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         )}
 
@@ -66,7 +77,7 @@ export default function RoundResults() {
           <div className="bg-fob-dark-navy px-6 py-5">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div>
-                <p className="text-fob-orange text-xs font-bold tracking-widest uppercase mb-1">Round {round.round}</p>
+                <p className="text-fob-orange text-xs font-bold tracking-widest uppercase mb-1">Session {round.session} · Round {round.sessionRound}</p>
                 <h3 className="text-white font-display font-bold text-xl">{round.dateDisplay}</h3>
               </div>
               <div className="flex flex-wrap gap-3">
@@ -121,7 +132,7 @@ export default function RoundResults() {
                     </td>
                     <td className="py-3 pl-3 pr-5 text-center">
                       <span className={`text-xs font-black ${r.pts > 0 ? 'text-fob-orange' : 'text-gray-300 dark:text-white/20'}`}>
-                        {r.pts > 0 ? (r.pts % 1 === 0 ? r.pts : r.pts.toFixed(2)) : '—'}
+                        {r.pts > 0 ? fmtPts(r.pts) : '—'}
                       </span>
                     </td>
                   </tr>

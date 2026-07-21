@@ -2,14 +2,16 @@
 
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { ClipboardList, Zap, Globe } from 'lucide-react';
+import { ClipboardList, Repeat, Award } from 'lucide-react';
 
-const scoringExample = [
-  { place: '1st', pts: 3,    highlight: true },
-  { place: '2nd', pts: 2,    highlight: false },
-  { place: '3rd', pts: 1,    highlight: false },
-  { place: '4th', pts: 0.75, highlight: false },
-  { place: 'All others', pts: 0, highlight: false },
+// Session 2 FOB Cup scoring: points = finish % × field size, + 1 participation point.
+const scoringRows = [
+  { place: '1st',      pct: '100%', highlight: true },
+  { place: '2nd',      pct: '90%',  highlight: false },
+  { place: '3rd',      pct: '80%',  highlight: false },
+  { place: '4th–9th',  pct: '−10% each', highlight: false },
+  { place: '10th',     pct: '10%',  highlight: false },
+  { place: '11th+',    pct: 'participation', highlight: false },
 ];
 
 export default function LeagueFormat() {
@@ -27,14 +29,18 @@ export default function LeagueFormat() {
         >
           <p className="text-fob-orange text-xs font-bold tracking-[0.25em] uppercase mb-3">How It Works</p>
           <h2 className="font-display font-bold text-4xl md:text-5xl text-fob-dark-navy dark:text-white tracking-tight">
-            Scoring Format
+            FOB Cup Point System
           </h2>
           <div className="fob-accent-bar mx-auto" />
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-4 max-w-2xl mx-auto leading-relaxed">
+            Beginning with Session 2, weekly points scale with the size of the field — so a big turnout is
+            worth more, and every round you play keeps you in the hunt.
+          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          {/* Scoring */}
+          {/* Weekly scoring */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -45,13 +51,14 @@ export default function LeagueFormat() {
               <div className="w-9 h-9 rounded-xl bg-fob-orange/10 flex items-center justify-center">
                 <ClipboardList className="size-4 text-fob-orange" />
               </div>
-              <h3 className="font-bold text-fob-dark-navy dark:text-white">Scoring Format</h3>
+              <h3 className="font-bold text-fob-dark-navy dark:text-white">Weekly Points</h3>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-xs mb-4 leading-relaxed">
-              Points available each week = number of foursomes. Scale adjusts proportionally with turnout.
+              1st place earns <span className="font-bold text-fob-orange">100% of the field size</span> in points, then
+              each place down drops 10% through 10th.
             </p>
             <div className="space-y-1.5 mb-4">
-              {scoringExample.map(row => (
+              {scoringRows.map(row => (
                 <div
                   key={row.place}
                   className={`flex justify-between items-center px-3 py-1.5 rounded-lg text-xs font-semibold ${
@@ -61,20 +68,21 @@ export default function LeagueFormat() {
                   }`}
                 >
                   <span>{row.place}</span>
-                  <span className={row.pts > 0 ? 'text-fob-orange font-black' : 'text-gray-300 dark:text-white/20'}>
-                    {row.pts > 0 ? `${row.pts % 1 === 0 ? row.pts : row.pts} pts` : '—'}
+                  <span className={row.highlight ? 'text-fob-orange font-black' : 'text-gray-400 dark:text-gray-300 font-bold'}>
+                    {row.pct}
                   </span>
                 </div>
               ))}
             </div>
             <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-3 text-xs text-gray-500 dark:text-gray-400">
-              <p className="font-bold text-gray-700 dark:text-gray-300 mb-1">Example (20 players)</p>
-              <p>5 foursomes = <span className="text-fob-orange font-bold">5 pts</span> available</p>
-              <p className="mt-1 text-[10px] text-gray-400">18 players = 4.5 pts available</p>
+              <p className="font-bold text-gray-700 dark:text-gray-300 mb-1">Example (8-player field)</p>
+              <p>1st = 8 × 100% = <span className="text-fob-orange font-bold">8 pts</span></p>
+              <p className="mt-0.5">2nd = 8 × 90% = <span className="text-fob-orange font-bold">7.2 pts</span></p>
+              <p className="mt-1 text-[10px] text-gray-400">…plus every player earns +1 participation point.</p>
             </div>
           </motion.div>
 
-          {/* Registration & Golf Genius */}
+          {/* Participation + Mulligans */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -84,15 +92,16 @@ export default function LeagueFormat() {
             <div className="bg-card border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-fob-orange/10 flex items-center justify-center">
-                  <Globe className="size-4 text-fob-orange" />
+                  <Award className="size-4 text-fob-orange" />
                 </div>
-                <h3 className="font-bold text-fob-dark-navy dark:text-white">Registration</h3>
+                <h3 className="font-bold text-fob-dark-navy dark:text-white">Participation Point</h3>
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">
-                All players must register weekly via the FOB website. The site handles group organization, participation tracking, weekly leaderboard updates, and season-long standings.
+                Every player who tees it up earns <span className="font-bold text-fob-orange">+1 point</span> on top of
+                their finish, so simply showing up keeps you climbing the FOB Cup standings.
               </p>
               <ul className="grid grid-cols-2 gap-2">
-                {['Weekly registration', 'Group organization', 'Participation tracking', 'Season standings'].map(item => (
+                {['Rewards strong finishes', 'Rewards consistency', 'Scales with turnout', 'Everyone stays in it'].map(item => (
                   <li key={item} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-fob-orange shrink-0" />
                     {item}
@@ -104,15 +113,17 @@ export default function LeagueFormat() {
             <div className="bg-card border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-sm flex-1">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-fob-orange/10 flex items-center justify-center">
-                  <Zap className="size-4 text-fob-orange" />
+                  <Repeat className="size-4 text-fob-orange" />
                 </div>
-                <h3 className="font-bold text-fob-dark-navy dark:text-white">Golf Genius Integration</h3>
+                <h3 className="font-bold text-fob-dark-navy dark:text-white">Two Mulligan Weeks</h3>
               </div>
               <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">
-                Official scoring is submitted directly from the Golf Genius spreadsheet system each week. Results automatically feed the leaderboard and standings.
+                Each player gets <span className="font-bold text-fob-orange">two mulligan weeks per session</span>. Your
+                two lowest weekly point totals are automatically dropped, so an off week — or a missed Tuesday — won&apos;t
+                sink your season.
               </p>
               <ul className="grid grid-cols-2 gap-2">
-                {['Weekly leaderboard', 'Season standings', 'Player rankings', 'Participation totals'].map(item => (
+                {['2 lowest scores dropped', 'Applied automatically', 'Per session, resets each half', 'Miss up to 2 weeks'].map(item => (
                   <li key={item} className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-fob-orange shrink-0" />
                     {item}
