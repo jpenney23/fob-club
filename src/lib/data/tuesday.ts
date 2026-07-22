@@ -243,8 +243,30 @@ const session2Raw: RawRound[] = [
       { pos: '8', name: 'Masiello, Charles', quotaDiff: -3, gross: 51 },
     ],
   },
+  {
+    date: '2026-07-21',
+    dateDisplay: 'July 21, 2026',
+    location: 'Bellevue Golf Club',
+    completed: true,
+    playerCount: 13,
+    results: [
+      { pos: '1',  name: 'Iuliano, Lou',      quotaDiff: 3,  gross: 44 },
+      { pos: '2',  name: 'Donnelly, Robert',  quotaDiff: 1,  gross: 44 },
+      { pos: '3',  name: 'Finocchiaro, Joe',  quotaDiff: 0,  gross: 41 },
+      { pos: '4',  name: 'McConaghy, Robert', quotaDiff: 0,  gross: 42 },
+      { pos: '5',  name: 'Cotton, Daniel',    quotaDiff: -1, gross: 42 },
+      { pos: '6',  name: 'Picardo, Steve',    quotaDiff: -1, gross: 48 },
+      { pos: '7',  name: 'DeVirgilio, John',  quotaDiff: -2, gross: 47 },
+      { pos: '8',  name: 'Masiello, Charles', quotaDiff: -2, gross: 47 },
+      { pos: '9',  name: 'Catalagna, Paul',   quotaDiff: -3, gross: 48 },
+      { pos: '10', name: 'Redler, William',   quotaDiff: -3, gross: 42 },
+      { pos: '11', name: 'Rotondi, Robert',   quotaDiff: -4, gross: 44 },
+      { pos: '12', name: 'Hastings, John',    quotaDiff: -6, gross: 52 },
+      { pos: '13', name: 'Zedros, Alexander', quotaDiff: -6, gross: 52 },
+    ],
+  },
   // Remaining Session 2 weeks — TBD
-  ...Array.from({ length: SESSION2_ROUNDS - 1 }, () => ({
+  ...Array.from({ length: SESSION2_ROUNDS - 2 }, () => ({
     date: '',
     dateDisplay: 'TBD',
     location: 'Bellevue Golf Club',
